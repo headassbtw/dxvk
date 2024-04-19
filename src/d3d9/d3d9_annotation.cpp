@@ -7,7 +7,7 @@ namespace dxvk {
   ////////////////////////////
 
   D3D9GlobalAnnotationList::D3D9GlobalAnnotationList()
-    : m_shouldAnnotate(false)
+    : m_shouldAnnotate(true)
     , m_eventDepth(0)
   {}
 

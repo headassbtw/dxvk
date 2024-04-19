@@ -24,9 +24,9 @@
 
 #include "d3d9_initializer.h"
 
-#include "L4D2VR/game.h"
-#include "L4D2VR/vr.h"
-#include "L4D2VR/sdk/sdk.h"
+#include "AWVR/game.hpp"
+//#include "L4D2VR/vr.h"
+//#include "L4D2VR/sdk/sdk.h"
 #include "d3d9_vr.h"
 
 #include <algorithm>
@@ -359,11 +359,10 @@ namespace dxvk {
 
 
   HRESULT STDMETHODCALLTYPE D3D9DeviceEx::Reset(D3DPRESENT_PARAMETERS* pPresentationParameters) {
-    if (g_Game && g_Game->m_VR)
-    {
-        pPresentationParameters->BackBufferWidth = g_Game->m_VR->m_RenderWidth;
-        pPresentationParameters->BackBufferHeight = g_Game->m_VR->m_RenderHeight;
-    }
+    /* if (g_game && g_game->m_VR) {
+        pPresentationParameters->BackBufferWidth = g_game->m_VR->m_renderWidth;
+        pPresentationParameters->BackBufferHeight = g_game->m_VR->m_renderHeight;
+    } */
 
     D3D9DeviceLock lock = LockDevice();
 
@@ -490,8 +489,7 @@ namespace dxvk {
       m_initializer->InitTexture(texture->GetCommonTexture(), initialData);
       *ppTexture = texture.ref();
 
-      if (g_Game && g_Game->m_VR && g_Game->m_VR->m_CreatingTextureID != -1)
-      {
+      /* if (g_Game && g_Game->m_VR && g_Game->m_VR->m_CreatingTextureID != -1) {
           vr::VRVulkanTextureData_t vulkanData;
           vr::VRVulkanTextureData_t vulkanData2;
           memset(&vulkanData, 0, sizeof(vr::VRVulkanTextureData_t));
@@ -518,7 +516,7 @@ namespace dxvk {
           textureTarget->m_VRTexture.eColorSpace = vr::ColorSpace_Auto;
           textureTarget->m_VRTexture.eType = vr::TextureType_Vulkan;
             
-      }
+      } */
 
       return D3D_OK;
     }
@@ -1647,13 +1645,12 @@ namespace dxvk {
 
   HRESULT STDMETHODCALLTYPE D3D9DeviceEx::SetViewport(const D3DVIEWPORT9* pViewport) {
     
-     // TODO: Overriding the viewport in-game will mess up the shadows, so only do it in the menu for now.
-    if (g_Game && !g_Game->m_EngineClient->IsInGame())
-    {
+     // This was originally for a shadow fix but this isn't source
+    /*if (g_game && !g_game->m_gameStateQuery.isInGame()) {
         D3DVIEWPORT9 *newViewport = const_cast<D3DVIEWPORT9 *>(pViewport);
-        newViewport->Width = g_Game->m_VR->m_RenderWidth;
-        newViewport->Height = g_Game->m_VR->m_RenderHeight;
-    }
+        newViewport->Width = g_game->m_VR->m_renderWidth;
+        newViewport->Height = g_game->m_VR->m_renderHeight;
+    }*/
       
     D3D9DeviceLock lock = LockDevice();
 
@@ -3510,13 +3507,13 @@ namespace dxvk {
     hDestWindowOverride,
     pDirtyRegion,
     dwFlags);
-	  
-	g_D3DVR9->WaitDeviceIdle();
     
-    if (g_Game && g_Game->m_VR)
-    {
-        g_Game->m_VR->Update();
-    }
+  if (!g_game->m_vrDisabled)
+	  g_D3DVR9->WaitDeviceIdle();
+    
+    /*if (g_game && g_game->m_VR) {
+        g_game->m_VR->update();
+    }*/
 	  
 	return result;
   }
